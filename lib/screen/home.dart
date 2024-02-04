@@ -19,8 +19,8 @@ class HomeSceen extends StatelessWidget {
           ),
         ],
       ),
-      body: const Center(
-        child: Text("Hello World!"),
+      body:  Center(
+        child: Text(remainderMessage.isEmpty? "Hello World!" : "$remainderMessage - $hours : $minute $ampm"),
       ),
     );
   }
