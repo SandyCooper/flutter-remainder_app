@@ -51,17 +51,25 @@ class LocalNotification {
     required String body,
     required String payload,
   }) async {
+    // calculating current time in seconds
+
     var currentTime = DateTime.now().hour == 0
         ? ((DateTime.now().minute * 60) + DateTime.now().second)
         : ((DateTime.now().hour * 3600) +
             (DateTime.now().minute * 60) +
             DateTime.now().second);
 
+    // calculating manual schedule time in seconds
+
     var scheduledTime = isSwitched == false && int.parse(hours) == 12
         ? (int.parse(minute) * 60)
         : (((isSwitched ? int.parse(hours) + 12 : int.parse(hours)) * 3600) +
             (int.parse(minute) * 60));
+
+    // initializing timezone
+
     tz.initializeTimeZones();
+
     await flutterLocalNotificationsPlugin.zonedSchedule(
         1,
         title,
@@ -69,12 +77,16 @@ class LocalNotification {
         tz.TZDateTime.now(tz.local)
             .add(Duration(seconds: scheduledTime - currentTime)),
         const NotificationDetails(
-            android: AndroidNotificationDetails(
-                'channel 2', 'your channel name',
-                channelDescription: 'your channel description',
-                importance: Importance.max,
-                priority: Priority.high,
-                ticker: 'ticker')),
+          android: AndroidNotificationDetails(
+            'channel 2',
+            'your channel name',
+            channelDescription: 'your channel description',
+            importance: Importance.max,
+            priority: Priority.high,
+            ticker: 'ticker',
+            // fullScreenIntent: true,
+          ),
+        ),
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
         uiLocalNotificationDateInterpretation:
             UILocalNotificationDateInterpretation.absoluteTime,

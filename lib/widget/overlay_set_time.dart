@@ -22,19 +22,6 @@ class _OverlaySetTimeState extends State<OverlaySetTime> {
     super.dispose();
   }
 
-  // void timePicker(BuildContext context) async {
-  //   Functions.overlayEntry.remove();
-  //   // await Future.delayed(const Duration(seconds: 1));
-  //   showTimePicker(context: context, initialTime: TimeOfDay.now())
-  //       .then((value) {
-  //     // setState(() {
-  //     timeOfDay = value!;
-  //     // Functions.showOverlay(context);
-  //     // });
-  //   });
-  //   // Functions.showOverlay(context);
-  // }
-
   Widget container() {
     return Container(
       child: Column(
