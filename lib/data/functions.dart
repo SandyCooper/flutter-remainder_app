@@ -29,3 +29,4 @@ String hours = "";
 String minute = "";
 String ampm = "";
 bool isSwitched = false;
+int counti = 0;

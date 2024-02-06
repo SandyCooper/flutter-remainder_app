@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_remainder_app/data/local_notification.dart';
 import 'package:flutter_remainder_app/screen/home.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await LocalNotification.init();
-  runApp(const MyApp());
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {

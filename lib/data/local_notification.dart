@@ -71,7 +71,7 @@ class LocalNotification {
     tz.initializeTimeZones();
 
     await flutterLocalNotificationsPlugin.zonedSchedule(
-        1,
+        counti,
         title,
         body,
         tz.TZDateTime.now(tz.local)
@@ -91,5 +91,10 @@ class LocalNotification {
         uiLocalNotificationDateInterpretation:
             UILocalNotificationDateInterpretation.absoluteTime,
         payload: payload);
+
+    
   }
+  static Future<void> deleteAllNotification()  async {
+      await flutterLocalNotificationsPlugin.cancelAll();
+    }
 }

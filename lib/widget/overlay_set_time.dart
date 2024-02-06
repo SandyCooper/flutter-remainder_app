@@ -2,17 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_remainder_app/data/functions.dart';
 import 'package:flutter_remainder_app/data/local_notification.dart';
 import 'package:flutter_remainder_app/data/styles.dart';
+import 'package:flutter_remainder_app/provider/list_of_remainder.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class OverlaySetTime extends StatefulWidget {
+class OverlaySetTime extends ConsumerStatefulWidget {
   const OverlaySetTime({super.key});
 
   @override
-  State<OverlaySetTime> createState() {
+  ConsumerState<OverlaySetTime> createState() {
     return _OverlaySetTimeState();
   }
 }
 
-class _OverlaySetTimeState extends State<OverlaySetTime> {
+class _OverlaySetTimeState extends ConsumerState<OverlaySetTime> {
   final remainderMessageController = TextEditingController();
   // String timeOfDay =
 
@@ -70,13 +72,18 @@ class _OverlaySetTimeState extends State<OverlaySetTime> {
                       onPressed: () {
                         // setState(() {
                         remainderMessage = remainderMessageController.text;
-                        // print(remainderMessage);
+                        var scheduleTimes =
+                            "${hours.length == 2 ? hours : '0$hours'} : ${minute.length == 2 ? minute : '0$minute'} $ampm";
+                        ref
+                            .read(listOfRemainderProvider.notifier)
+                            .addRemainder(remainderMessage, scheduleTimes);
                         LocalNotification.scheduleNotification(
                             title: "Remainder",
                             body: remainderMessage,
                             payload: remainderMessage);
-                    
+
                         Functions.overlayEntry.remove();
+                        counti++;
                         // });
                       },
                       child: Text("Test"),
