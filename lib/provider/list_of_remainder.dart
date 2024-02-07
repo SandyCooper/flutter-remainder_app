@@ -9,6 +9,10 @@ class ListOfRemainderNotifier extends StateNotifier<List<Remainders>> {
 
     state = [newRemainder, ...state];
   }
+
+  void deleteAllRemainder() {
+    state = [];
+  }
 }
 
 final listOfRemainderProvider =

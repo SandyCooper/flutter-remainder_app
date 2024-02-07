@@ -26,6 +26,7 @@ class HomeSceen extends ConsumerWidget {
             icon: const Icon(Icons.delete),
             onPressed: () {
               LocalNotification.deleteAllNotification();
+              ref.read(listOfRemainderProvider.notifier).deleteAllRemainder();
             },
           ),
         ],

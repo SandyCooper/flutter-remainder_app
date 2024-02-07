@@ -63,7 +63,12 @@ class LocalNotification {
 
     var scheduledTime = isSwitched == false && int.parse(hours) == 12
         ? (int.parse(minute) * 60)
-        : (((isSwitched ? int.parse(hours) + 12 : int.parse(hours)) * 3600) +
+        : (((isSwitched
+                    ? (int.parse(hours) == 12
+                        ? int.parse(hours)
+                        : int.parse(hours) + 12)
+                    : int.parse(hours)) *
+                3600) +
             (int.parse(minute) * 60));
 
     // initializing timezone
@@ -91,10 +96,9 @@ class LocalNotification {
         uiLocalNotificationDateInterpretation:
             UILocalNotificationDateInterpretation.absoluteTime,
         payload: payload);
-
-    
   }
-  static Future<void> deleteAllNotification()  async {
-      await flutterLocalNotificationsPlugin.cancelAll();
-    }
+
+  static Future<void> deleteAllNotification() async {
+    await flutterLocalNotificationsPlugin.cancelAll();
+  }
 }

@@ -13,7 +13,7 @@ class Functions {
     // maintainState: true,
   );
 
-  static void showOverlay(BuildContext context) async {
+  static Future<void> showOverlay(BuildContext context) async {
     OverlayState overlay = Overlay.of(context);
     overlay.insert(overlayEntry);
   }

@@ -17,11 +17,12 @@ class RemainderList extends ConsumerStatefulWidget {
 class _RemainderListState extends ConsumerState<RemainderList> {
   Widget remainderContainer(int index, List<Remainders> rml) {
     return Container(
+      margin: const EdgeInsets.only(bottom: 15),
       padding: const EdgeInsets.all(10),
-      height: 70,
+      // height: 50,
       decoration: BoxDecoration(
         color: const Color.fromARGB(255, 218, 255, 219),
-        borderRadius: BorderRadius.circular(15),
+        borderRadius: BorderRadius.circular(18),
         border: Border(
           top: borderSide,
           right: borderSide,
@@ -30,9 +31,34 @@ class _RemainderListState extends ConsumerState<RemainderList> {
         ),
       ),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(rml[index].message),
-          Text(rml[index].scheduleTime),
+          Expanded(
+            child: Container(
+              padding: const EdgeInsets.only(right: 10, left: 10),
+              child: Text(
+                rml[index].message,
+                style: const TextStyle(
+                  color: Color.fromARGB(255, 60, 77, 60),
+                  fontSize: 19,
+                  fontWeight: FontWeight.w800,
+                ),
+                softWrap: true,
+              ),
+            ),
+          ),
+          Container(
+            width: 100,
+            child: Text(
+              rml[index].scheduleTime,
+              style: const TextStyle(
+                color: Color.fromARGB(255, 37, 46, 37),
+                fontSize: 14,
+                // fontWeight: FontWeight.w600,
+              ),
+              textAlign: TextAlign.end,
+            ),
+          ),
         ],
       ),
     );

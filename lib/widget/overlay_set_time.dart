@@ -16,7 +16,7 @@ class OverlaySetTime extends ConsumerStatefulWidget {
 
 class _OverlaySetTimeState extends ConsumerState<OverlaySetTime> {
   final remainderMessageController = TextEditingController();
-  // String timeOfDay =
+  DateTime dat = DateTime.now();
 
   @override
   void dispose() {
@@ -54,9 +54,19 @@ class _OverlaySetTimeState extends ConsumerState<OverlaySetTime> {
                   child: Container(
                     // color: Colors.green,
                     child: ElevatedButton(
-                      onPressed: () {
+                      onPressed: () async {
                         Functions.overlayEntry.remove();
+                        // await showDatePicker(
+                        //         context: context,
+                        //         initialDate: DateTime.now(),
+                        //         firstDate: DateTime(2024),
+                        //         lastDate: DateTime(2026))
+                        //     .then((value) {
+                        //   dat = value!;
+                        //   print(dat);
+                        // });
                         Functions.showOverlay2(context);
+                        // print("hello");
                       },
                       child: Text(hours.isEmpty &&
                               minute.isEmpty &&
@@ -81,6 +91,9 @@ class _OverlaySetTimeState extends ConsumerState<OverlaySetTime> {
                             title: "Remainder",
                             body: remainderMessage,
                             payload: remainderMessage);
+
+                        // var date = DateTime.now().day;
+                        // print(date);
 
                         Functions.overlayEntry.remove();
                         counti++;
