@@ -4,6 +4,10 @@ import 'package:flutter_remainder_app/data/functions.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
+  var currentDate = DateTime.now().day;
+  var scheduleDate = 9;
+  bool isSameDate = scheduleDate == currentDate;
+
 class LocalNotification {
   static FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
@@ -46,6 +50,8 @@ class LocalNotification {
         .show(0, title, body, notificationDetails, payload: payload);
   }
 
+
+
   static Future<void> scheduleNotification({
     required String title,
     required String body,
@@ -61,7 +67,7 @@ class LocalNotification {
 
     // calculating manual schedule time in seconds
 
-    var scheduledTime = isSwitched == false && int.parse(hours) == 12
+    var scheduledTime = isSameDate?(isSwitched == false && int.parse(hours) == 12
         ? (int.parse(minute) * 60)
         : (((isSwitched
                     ? (int.parse(hours) == 12
@@ -69,7 +75,15 @@ class LocalNotification {
                         : int.parse(hours) + 12)
                     : int.parse(hours)) *
                 3600) +
-            (int.parse(minute) * 60));
+            (int.parse(minute) * 60))) : (isSwitched == false && int.parse(hours) == 12
+        ? ((24*(scheduleDate - currentDate)*3600) + int.parse(minute) * 60)
+        : (((isSwitched
+                    ? (int.parse(hours) == 12
+                        ? (int.parse(hours) + (24*(scheduleDate - currentDate)))
+                        : (int.parse(hours) + 12 + (24*(scheduleDate - currentDate))))
+                    : (int.parse(hours) + (24*(scheduleDate - currentDate)))) *
+                3600) +
+            (int.parse(minute) * 60)));
 
     // initializing timezone
 
@@ -89,7 +103,7 @@ class LocalNotification {
             importance: Importance.max,
             priority: Priority.high,
             ticker: 'ticker',
-            // fullScreenIntent: true,
+            fullScreenIntent: true,
           ),
         ),
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
