@@ -17,6 +17,7 @@ class OverlaySetTime extends ConsumerStatefulWidget {
 class _OverlaySetTimeState extends ConsumerState<OverlaySetTime> {
   final remainderMessageController = TextEditingController();
   DateTime dat = DateTime.now();
+  bool error = false;
 
   @override
   void dispose() {
@@ -32,76 +33,108 @@ class _OverlaySetTimeState extends ConsumerState<OverlaySetTime> {
             child: TextField(
               controller: remainderMessageController,
               decoration: InputDecoration(
-                hintText: "Write Something",
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
+                filled: true,
+                fillColor: error
+                    ? const Color.fromARGB(255, 252, 191, 189)
+                    : const Color.fromARGB(255, 189, 252, 191),
+                // fillColor: Color.fromARGB(255, 189, 252, 191),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: borderSide.copyWith(
+                      width: 2, color: const Color.fromARGB(255, 47, 87, 48)),
+                  borderRadius: BorderRadius.circular(10),
                 ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: borderSide.copyWith(
+                      color: const Color.fromARGB(255, 47, 87, 48), width: 3),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                hintText: "Write Something",
               ),
-              // onSubmitted: (value) {
-              //   setState((){
-              //     remainderMessage = remainderMessageController.text;
-              //   });
-              // },
             ),
           ),
-          // SizedBox(
-          //   height: 10,
-          // ),
           Expanded(
             child: Row(
               children: [
                 Expanded(
                   child: Container(
-                    // color: Colors.green,
                     child: ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all(
+                          const Color.fromARGB(255, 189, 252, 191),
+                        ),
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            side: borderSide.copyWith(
+                                width: 2,
+                                color: const Color.fromARGB(255, 47, 87, 48)),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      ),
                       onPressed: () async {
                         Functions.overlayEntry.remove();
-                        // await showDatePicker(
-                        //         context: context,
-                        //         initialDate: DateTime.now(),
-                        //         firstDate: DateTime(2024),
-                        //         lastDate: DateTime(2026))
-                        //     .then((value) {
-                        //   dat = value!;
-                        //   print(dat);
-                        // });
                         Functions.showOverlay2(context);
-                        // print("hello");
                       },
-                      child: Text(hours.isEmpty &&
-                              minute.isEmpty &&
-                              ampm.isEmpty
-                          ? TimeOfDay.now().format(context).toString()
-                          : "${hours.length == 2 ? hours : '0$hours'} : ${minute.length == 2 ? minute : '0$minute'} $ampm"),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Text(
+                            "${daate.length == 2 ? daate : '0$daate'}/${DateTime.now().month.toString().length == 2 ? DateTime.now().month : '0${DateTime.now().month}'}/${DateTime.now().year}",
+                          ),
+                          Text(hours.isEmpty && minute.isEmpty && ampm.isEmpty
+                              ? TimeOfDay.now().format(context).toString()
+                              : "${hours.length == 2 ? hours : '0$hours'} : ${minute.length == 2 ? minute : '0$minute'} $ampm"),
+                        ],
+                      ),
                     ),
                   ),
+                ),
+                const SizedBox(
+                  width: 10,
                 ),
                 Expanded(
                   child: Container(
                     child: ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all(
+                          const Color.fromARGB(255, 189, 252, 191),
+                        ),
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            side: borderSide.copyWith(
+                                width: 2,
+                                color: const Color.fromARGB(255, 47, 87, 48)),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      ),
                       onPressed: () {
-                        // setState(() {
-                        remainderMessage = remainderMessageController.text;
-                        var scheduleTimes =
-                            "${hours.length == 2 ? hours : '0$hours'} : ${minute.length == 2 ? minute : '0$minute'} $ampm";
-                        ref
-                            .read(listOfRemainderProvider.notifier)
-                            .addRemainder(remainderMessage, scheduleTimes);
-                        LocalNotification.scheduleNotification(
-                            title: "Remainder",
-                            body: remainderMessage,
-                            payload: remainderMessage);
-
-                        // var date = DateTime.now().day;
-                        // print(date);
-
-                        Functions.overlayEntry.remove();
-                        counti++;
-                        // });
+                        if (remainderMessageController.text.isNotEmpty) {
+                          remainderMessage = remainderMessageController.text;
+                          var scheduleTimes =
+                              "${hours.length == 2 ? hours : '0$hours'} : ${minute.length == 2 ? minute : '0$minute'} $ampm";
+                          ref
+                              .read(listOfRemainderProvider.notifier)
+                              .addRemainder(remainderMessage, scheduleTimes);
+                          LocalNotification.scheduleNotification(hours, minute,
+                              title: "Remainder",
+                              body: remainderMessage,
+                              payload: remainderMessage);
+                          Functions.overlayEntry.remove();
+                          counti++;
+                        } else {
+                          // Functions.overlayEntry.remove();
+                          setState(() {
+                            error = remainderMessageController.text.isEmpty
+                                ? true
+                                : false;
+                          });
+                        }
                       },
-                      child: Text("Test"),
+                      child: const Text("Set"),
                     ),
-                    // child: Text("hi how are you?"),
                   ),
                 ),
               ],
@@ -115,25 +148,38 @@ class _OverlaySetTimeState extends ConsumerState<OverlaySetTime> {
   @override
   Widget build(context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(146, 0, 0, 0),
-      body: Center(
-        child: Container(
-          padding: const EdgeInsets.all(10),
-          height: 300,
-          width: 300,
-          // color: Colors.red,
-          decoration: BoxDecoration(
-            color: const Color.fromARGB(255, 218, 255, 219),
-            borderRadius: BorderRadius.circular(15),
-            border: Border(
-              top: borderSide,
-              right: borderSide,
-              left: borderSide,
-              bottom: borderSide,
+      backgroundColor: const Color.fromARGB(146, 0, 0, 0),
+      body: Stack(
+        children: [Positioned(
+          top: 110,
+          left: 310,
+          child: GestureDetector(
+            onTap: () {
+              Functions.overlayEntry.remove();
+            },
+            child: const CircleAvatar(
+              backgroundColor: Color.fromARGB(255, 252, 191, 189),
             ),
           ),
-          child: container(),
-        ),
+        ),Center(
+          child: Container(
+            padding: const EdgeInsets.all(10),
+            height: 175,
+            width: 300,
+            // color: Colors.red,
+            decoration: BoxDecoration(
+              color: const Color.fromARGB(255, 218, 255, 219),
+              borderRadius: BorderRadius.circular(15),
+              border: Border(
+                top: borderSide,
+                right: borderSide,
+                left: borderSide,
+                bottom: borderSide,
+              ),
+            ),
+            child: container(),
+          ),
+        ),]
       ),
     );
   }

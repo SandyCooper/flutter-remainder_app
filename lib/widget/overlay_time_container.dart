@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_remainder_app/data/functions.dart';
 import 'package:flutter_remainder_app/data/styles.dart';
+import 'package:flutter_remainder_app/widget/textfield_overlay2.dart';
 
 class OverlatTimeContainer extends StatefulWidget {
   const OverlatTimeContainer({super.key});
@@ -14,13 +15,17 @@ class OverlatTimeContainer extends StatefulWidget {
 class _OverlatTimeContainerState extends State<OverlatTimeContainer> {
   TextEditingController hoursController = TextEditingController();
   TextEditingController minutesController = TextEditingController();
+  TextEditingController dateController = TextEditingController();
 
-  
+  bool errorDate = false;
+  bool errorHour = false;
+  bool errorMinute = false;
 
   @override
   void dispose() {
     hoursController.dispose();
     minutesController.dispose();
+    dateController.dispose();
     super.dispose();
   }
 
@@ -44,23 +49,33 @@ class _OverlatTimeContainerState extends State<OverlatTimeContainer> {
           Expanded(
             child: Row(children: [
               Expanded(
-                child: TextField(
-                  controller: hoursController,
-                  keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    hintText: "H",
-                  ),
+                child: Overlay2TextField(
+                  controller: dateController,
+                  borderSide: borderSide,
+                  hintText: "Date",
+                  error: errorDate,
                 ),
               ),
+              const SizedBox(
+                width: 10,
+              ),
               Expanded(
-                child: TextField(
+                child: Overlay2TextField(
+                  controller: hoursController,
+                  borderSide: borderSide,
+                  hintText: "H",
+                  error: errorHour,
+                ),
+              ),
+              const SizedBox(
+                width: 10,
+              ),
+              Expanded(
+                child: Overlay2TextField(
                   controller: minutesController,
-                  keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    hintText: "M",
-                  ),
+                  borderSide: borderSide,
+                  hintText: "M",
+                  error: errorMinute,
                 ),
               ),
             ]),
@@ -70,6 +85,13 @@ class _OverlatTimeContainerState extends State<OverlatTimeContainer> {
               children: [
                 Expanded(
                     child: Switch(
+                        activeColor: const Color.fromARGB(255, 65, 119, 67),
+                        inactiveThumbColor:
+                            const Color.fromARGB(255, 43, 77, 44),
+                        trackOutlineColor: MaterialStateProperty.all(
+                          const Color.fromARGB(255, 43, 77, 44),
+                        ),
+                        // inactiveTrackColor: Color.fromARGB(255, 43, 77, 44),
                         value: isSwitched,
                         onChanged: (value) {
                           setState(() {
@@ -77,17 +99,51 @@ class _OverlatTimeContainerState extends State<OverlatTimeContainer> {
                           });
                         })),
                 Expanded(
-                    child: Container(
-                  child: Text(isSwitched ? "PM" : "AM"),
-                )),
+                  child: Text(
+                    isSwitched ? "PM" : "AM",
+                    style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
                 Expanded(
                   child: ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all(
+                        const Color.fromARGB(255, 189, 252, 191),
+                      ),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          side: borderSide.copyWith(
+                              width: 2,
+                              color: const Color.fromARGB(255, 47, 87, 48)),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                    ),
                     onPressed: () {
-                      Functions.overlayEntry2.remove();
-                      hours = hoursController.text;
-                      minute = minutesController.text;
-                      ampm = isSwitched ? "PM" : "AM";
-                      Functions.showOverlay(context);
+                      if (hoursController.text.isNotEmpty &&
+                          minutesController.text.isNotEmpty &&
+                          dateController.text.isNotEmpty) {
+                        Functions.overlayEntry2.remove();
+                        hours = hoursController.text;
+                        minute = minutesController.text;
+                        daate = dateController.text;
+                        ampm = isSwitched ? "PM" : "AM";
+                        Functions.showOverlay(context);
+                      } else {
+                        // Functions.overlayEntry2.remove();
+                        // Functions.showOverlay(context);
+                        setState(() {
+                          errorDate =
+                              dateController.text.isEmpty ? true : false;
+                          errorHour =
+                              hoursController.text.isEmpty ? true : false;
+                          errorMinute =
+                              minutesController.text.isEmpty ? true : false;
+                        });
+                      }
                     },
                     child: const Text("ok"),
                   ),
@@ -104,9 +160,24 @@ class _OverlatTimeContainerState extends State<OverlatTimeContainer> {
   Widget build(context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(132, 0, 0, 0),
-      body: Center(
-        child: timeContainer(),
-      ),
+      body: Stack(children: [
+        Positioned(
+          top: 150,
+          left: 330,
+          child: GestureDetector(
+            onTap: () {
+              Functions.overlayEntry2.remove();
+              Functions.showOverlay(context);
+            },
+            child: const CircleAvatar(
+              backgroundColor: Color.fromARGB(255, 252, 191, 189),
+            ),
+          ),
+        ),
+        Center(
+          child: timeContainer(),
+        ),
+      ]),
     );
   }
 }

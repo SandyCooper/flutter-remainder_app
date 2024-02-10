@@ -30,3 +30,4 @@ String minute = "";
 String ampm = "";
 bool isSwitched = false;
 int counti = 0;
+String daate = "0";

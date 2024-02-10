@@ -4,9 +4,48 @@ import 'package:flutter_remainder_app/data/functions.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
-  var currentDate = DateTime.now().day;
-  var scheduleDate = 9;
-  bool isSameDate = scheduleDate == currentDate;
+// calculating current time in seconds
+
+int calcTime(hours, minute) {
+  var curreentDate = DateTime.now().day;
+  var schedulleDate =
+      int.parse(daate) == 0 ? DateTime.now().day : int.parse(daate);
+  bool isSameDate = schedulleDate == curreentDate;
+  var curreentTime = DateTime.now().hour == 0
+      ? ((DateTime.now().minute * 60) + DateTime.now().second)
+      : ((DateTime.now().hour * 3600) +
+          (DateTime.now().minute * 60) +
+          DateTime.now().second);
+
+  // calculating manual schedule time in seconds
+
+  var schedulledTime = isSameDate
+      ? (isSwitched == false && int.parse(hours) == 12
+          ? (int.parse(minute) * 60)
+          : (((isSwitched
+                      ? (int.parse(hours) == 12
+                          ? int.parse(hours)
+                          : int.parse(hours) + 12)
+                      : int.parse(hours)) *
+                  3600) +
+              (int.parse(minute) * 60)))
+      : (isSwitched == false && int.parse(hours) == 12
+          ? ((24 * (schedulleDate - curreentDate) * 3600) +
+              int.parse(minute) * 60)
+          : (((isSwitched
+                      ? (int.parse(hours) == 12
+                          ? (int.parse(hours) +
+                              (24 * (schedulleDate - curreentDate)))
+                          : (int.parse(hours) +
+                              12 +
+                              (24 * (schedulleDate - curreentDate))))
+                      : (int.parse(hours) +
+                          (24 * (schedulleDate - curreentDate)))) *
+                  3600) +
+              (int.parse(minute) * 60)));
+
+  return schedulledTime - curreentTime;
+}
 
 class LocalNotification {
   static FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
@@ -50,41 +89,15 @@ class LocalNotification {
         .show(0, title, body, notificationDetails, payload: payload);
   }
 
+  // static final t = calcTime(hours, minute);
 
-
-  static Future<void> scheduleNotification({
+  static Future<void> scheduleNotification(
+    String hours,
+    String minute, {
     required String title,
     required String body,
     required String payload,
   }) async {
-    // calculating current time in seconds
-
-    var currentTime = DateTime.now().hour == 0
-        ? ((DateTime.now().minute * 60) + DateTime.now().second)
-        : ((DateTime.now().hour * 3600) +
-            (DateTime.now().minute * 60) +
-            DateTime.now().second);
-
-    // calculating manual schedule time in seconds
-
-    var scheduledTime = isSameDate?(isSwitched == false && int.parse(hours) == 12
-        ? (int.parse(minute) * 60)
-        : (((isSwitched
-                    ? (int.parse(hours) == 12
-                        ? int.parse(hours)
-                        : int.parse(hours) + 12)
-                    : int.parse(hours)) *
-                3600) +
-            (int.parse(minute) * 60))) : (isSwitched == false && int.parse(hours) == 12
-        ? ((24*(scheduleDate - currentDate)*3600) + int.parse(minute) * 60)
-        : (((isSwitched
-                    ? (int.parse(hours) == 12
-                        ? (int.parse(hours) + (24*(scheduleDate - currentDate)))
-                        : (int.parse(hours) + 12 + (24*(scheduleDate - currentDate))))
-                    : (int.parse(hours) + (24*(scheduleDate - currentDate)))) *
-                3600) +
-            (int.parse(minute) * 60)));
-
     // initializing timezone
 
     tz.initializeTimeZones();
@@ -94,7 +107,7 @@ class LocalNotification {
         title,
         body,
         tz.TZDateTime.now(tz.local)
-            .add(Duration(seconds: scheduledTime - currentTime)),
+            .add(Duration(seconds: calcTime(hours, minute))),
         const NotificationDetails(
           android: AndroidNotificationDetails(
             'channel 2',
