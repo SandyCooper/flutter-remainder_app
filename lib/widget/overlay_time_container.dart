@@ -156,6 +156,8 @@ class _OverlatTimeContainerState extends State<OverlatTimeContainer> {
     );
   }
 
+  // Offset offset = Offset(100, 100);
+
   @override
   Widget build(context) {
     return Scaffold(
@@ -171,6 +173,14 @@ class _OverlatTimeContainerState extends State<OverlatTimeContainer> {
             },
             child: const CircleAvatar(
               backgroundColor: Color.fromARGB(255, 252, 191, 189),
+              child: Text(
+                  "X",
+                  style: TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.bold,
+                    color: Color.fromARGB(255, 143, 64, 62),
+                  ),
+                ),
             ),
           ),
         ),

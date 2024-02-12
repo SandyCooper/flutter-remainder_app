@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_remainder_app/data/local_notification.dart';
 // import 'package:flutter_remainder_app/data/functions.dart';
 import 'package:flutter_remainder_app/data/modal.dart';
 import 'package:flutter_remainder_app/data/styles.dart';
@@ -70,7 +71,14 @@ class _RemainderListState extends ConsumerState<RemainderList> {
     return ListView.builder(
       padding: const EdgeInsets.all(15),
       itemCount: rmainderList.length,
-      itemBuilder: (context, index) => remainderContainer(index, rmainderList),
+      itemBuilder: (context, index) => Dismissible(
+        key: ValueKey(rmainderList[index]),
+        onDismissed: (d) {
+          LocalNotification.deleteSpecificNotification(rmainderList[index].id);
+            rmainderList.removeAt(index);
+        },
+        child: remainderContainer(index, rmainderList),
+      ),
     );
   }
 }

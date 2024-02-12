@@ -123,9 +123,17 @@ class LocalNotification {
         uiLocalNotificationDateInterpretation:
             UILocalNotificationDateInterpretation.absoluteTime,
         payload: payload);
+
+    // await Future.delayed(Duration(seconds: calcTime(hours, minute)));
+
+    // print('hello');
   }
 
   static Future<void> deleteAllNotification() async {
     await flutterLocalNotificationsPlugin.cancelAll();
+  }
+
+  static Future<void> deleteSpecificNotification(int id) async {
+    await flutterLocalNotificationsPlugin.cancel(id);
   }
 }

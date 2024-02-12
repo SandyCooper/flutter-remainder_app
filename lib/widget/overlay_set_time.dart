@@ -117,7 +117,8 @@ class _OverlaySetTimeState extends ConsumerState<OverlaySetTime> {
                               "${hours.length == 2 ? hours : '0$hours'} : ${minute.length == 2 ? minute : '0$minute'} $ampm";
                           ref
                               .read(listOfRemainderProvider.notifier)
-                              .addRemainder(remainderMessage, scheduleTimes);
+                              .addRemainder(
+                                  remainderMessage, scheduleTimes, counti);
                           LocalNotification.scheduleNotification(hours, minute,
                               title: "Remainder",
                               body: remainderMessage,
@@ -145,41 +146,64 @@ class _OverlaySetTimeState extends ConsumerState<OverlaySetTime> {
     );
   }
 
+  Offset offset = Offset(50, 270);
+
   @override
   Widget build(context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(146, 0, 0, 0),
       body: Stack(
-        children: [Positioned(
-          top: 110,
-          left: 310,
-          child: GestureDetector(
-            onTap: () {
-              Functions.overlayEntry.remove();
-            },
-            child: const CircleAvatar(
-              backgroundColor: Color.fromARGB(255, 252, 191, 189),
-            ),
-          ),
-        ),Center(
-          child: Container(
-            padding: const EdgeInsets.all(10),
-            height: 175,
-            width: 300,
-            // color: Colors.red,
-            decoration: BoxDecoration(
-              color: const Color.fromARGB(255, 218, 255, 219),
-              borderRadius: BorderRadius.circular(15),
-              border: Border(
-                top: borderSide,
-                right: borderSide,
-                left: borderSide,
-                bottom: borderSide,
+        children: [
+          Positioned(
+            left: offset.dx,
+            top: offset.dy,
+            child: GestureDetector(
+              onPanUpdate: (details) {
+                setState(() {
+                  // print(details.delta);
+                  offset += details.delta;
+                });
+              },
+              child: Container(
+                padding: const EdgeInsets.all(10),
+                height: 175,
+                width: 300,
+                // color: Colors.red,
+                decoration: BoxDecoration(
+                  color: const Color.fromARGB(255, 218, 255, 219),
+                  borderRadius: BorderRadius.circular(15),
+                  border: Border(
+                    top: borderSide,
+                    right: borderSide,
+                    left: borderSide,
+                    bottom: borderSide,
+                  ),
+                ),
+                child: container(),
               ),
             ),
-            child: container(),
           ),
-        ),]
+          Positioned(
+            left: offset.dx + 260,
+            top: offset.dy - 60,
+            child: GestureDetector(
+              onTap: () {
+                Functions.overlayEntry.remove();
+              },
+              child: const CircleAvatar(
+                backgroundColor: Color.fromARGB(255, 252, 191, 189),
+                child: Text(
+                  "X",
+                  style: TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.bold,
+                    color: Color.fromARGB(255, 143, 64, 62),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

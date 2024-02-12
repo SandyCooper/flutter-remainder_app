@@ -4,8 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class ListOfRemainderNotifier extends StateNotifier<List<Remainders>> {
   ListOfRemainderNotifier() : super([]);
 
-  void addRemainder(String message, String time) {
-    Remainders newRemainder = Remainders(message: message, scheduleTime: time);
+  void addRemainder(String message, String time, int id) {
+    Remainders newRemainder = Remainders(message: message, scheduleTime: time, id: id);
 
     state = [newRemainder, ...state];
   }
